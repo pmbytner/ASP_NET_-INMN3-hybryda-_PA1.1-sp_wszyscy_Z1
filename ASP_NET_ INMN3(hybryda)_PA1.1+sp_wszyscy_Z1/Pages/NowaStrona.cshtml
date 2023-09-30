@@ -1,0 +1,67 @@
+﻿@page
+@model ASP_NET__INMN3_hybryda__PA1._1_sp_wszyscy_Z1.Pages.NowaStronaModel
+@{
+    ViewData["Title"] = "Nowa Strona";
+
+    string[] etykiety = { "Miasto", "Populacja", "Powierzchnia" };
+    string[] województwa = { "Pomorskie", "Kujawsko-Pomorskie", "Warmińsko-Mazurskie" };
+    Dictionary<string, (string Nazwa, int Populacja, decimal Powierzchnia)[]> miastaPoWojewództwach = new() {
+        ["Pomorskie"] = new[] {
+            ("Gdańsk", 500000, 12.5m),
+            ("Gdynia", 250000, 14.1m),
+            ("Sopot", 30000, 3.2m)
+        },
+        ["Kujawsko-Pomorskie"] = new[] {
+            ("Grudziądz", 100000, 11.3m)
+        },
+        ["Warmińsko-Mazurskie"] = new[] {
+            ("Elbląg", 100000, 10.2m),
+        }
+    };
+    (string Nazwa, int Populacja, decimal Powierzchnia)[] miasta;
+    if((string?)Request.Query["województwo"] == null || !miastaPoWojewództwach.ContainsKey(Request.Query["województwo"])){
+        List<(string, int, decimal)> temp = new();
+        foreach((string Nazwa, int Populacja, decimal Powierzchnia)[] województwo in miastaPoWojewództwach.Values)
+            temp.AddRange(województwo);
+        miasta = temp.ToArray();
+    }
+    else
+        miasta = miastaPoWojewództwach[Request.Query["województwo"]];
+
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<p>Nowa przykładowa strona Razor</p>
+
+<h1>Treść zapytania o województwo</h1>
+<p>@Request.Query["województwo"]</p>
+@if((string?)Request.Query["województwo"] == null)
+    { <p>Puste zapytanie</p> }
+<nav>
+    <ul>
+        <li><a href="?">Wszystko</a></li>
+        @foreach(string województwo in województwa)
+            {<li><a href="?województwo=@województwo">@województwo</a></li>}
+    </ul>
+</nav>
+
+<h1>Tabela z danymi o miastach</h1>
+
+<table>
+    <thead>
+        <tr>
+            @foreach(string etykieta in etykiety)
+                { <th>@etykieta</th> }
+        </tr>
+    </thead>
+    <tbody>
+        @foreach((string Nazwa, ulong Populacja, decimal Powierzchnia) miasto in miasta){
+            <tr>
+                <td>@miasto.Nazwa</td>
+                <td>@miasto.Populacja</td>
+                <td>@miasto.Powierzchnia</td>
+            </tr>
+        }
+    </tbody>
+</table>
