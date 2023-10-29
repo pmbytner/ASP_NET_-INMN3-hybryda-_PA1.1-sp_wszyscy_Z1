@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "mssql1": {
+      "type": "mssql",
+      "connectionId": "ConnectionStrings:PA1_1_sp_wszyscy_Z1Context"
+    }
+  }
+}
